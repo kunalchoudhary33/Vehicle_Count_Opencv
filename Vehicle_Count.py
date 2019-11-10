@@ -20,22 +20,24 @@ _, frame1 = cap.read()
 _, frame2 = cap.read()
 
 while(True):
-
+    
+    # Background difference and apply filters
     diff = cv2.absdiff(frame1, frame2)
     gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5,5), 0)
     _, thresh = cv2.threshold(blur, 60, 255, cv2.THRESH_BINARY)
     dilated = cv2.dilate(thresh, None, iterations=3)
+    
+    # Get contours
     contours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    #cv2.drawContours(frame1, contours, -1, (255,255,255), -1
     
-    # Vehicle upwards
-    cv2.line(frame1, (300,300), (600,300),(0,0,255), 2)
-    cv2.line(frame1, (300,310), (600,310),(0,0, 255), 2)
+    # Draw Vehicle upwards line
+    cv2.line(frame1, (10,300), (600,300),(0,0,255), 2)
+    cv2.line(frame1, (10,310), (600,310),(0,0, 255), 2)
     
-    # Vehicle downwards
-    cv2.line(frame1, (730,340), (1100,340),(0,0,255), 2)
-    cv2.line(frame1, (730,330), (1100,330),(0,0,255), 2)
+    # Draw Vehicle downwards Line
+    cv2.line(frame1, (730,340), (1200,340),(0,0,255), 2)
+    cv2.line(frame1, (730,330), (1200,330),(0,0,255), 2)
    
     for contour in contours:
         (x,y,w,h) = cv2.boundingRect(contour)
@@ -45,13 +47,13 @@ while(True):
             continue
         if (w<40):
             (tx, ty) = get_centroid(x,y,w,h)
-            cv2.rectangle(frame1, (x,y), (x+w, y+h), (0,255,0), 2)
+            cv2.rectangle(frame1, (x,y), (x+w, y+h), (255,0,0), 2)
             if(tx>300 and tx < 600 and ty > 300 and ty<305):
                 upTwoWheelerCount = upTwoWheelerCount +1
             if(tx>730 and tx < 1100 and ty > 330 and ty<335):
                 downTwoWheelerCount = downTwoWheelerCount +1
             
-        if (w>40 and w<100):
+        if (w>40 and h<100):
             (cx, cy) = get_centroid(x,y,w,h)
             cv2.rectangle(frame1, (x,y), (x+w, y+h), (255,0,0), 2)
             if(cx>300 and cx < 600 and cy > 300 and cy<305):
@@ -70,6 +72,7 @@ while(True):
         cv2.putText(frame1, twoWheelDownText, (900, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0 ,255), 2)
          
     cv2.imshow("Frame", frame1)
+    #cv2.imshow("dilated", dilated)
     frame1=frame2
     _, frame2 = cap.read()
     _, frame2 = cap.read()
