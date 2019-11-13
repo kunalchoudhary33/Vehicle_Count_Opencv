@@ -8,4 +8,6 @@ Language Used : Python - 3.6.5
 
 Libraries Used : OpenCv - 4.0.0, Numpy - 1.13.1
 
+Output Video can be viwed : https://youtu.be/5i-Rf7r-TLU
+
 Accuracy can be improved with the use of standard data set for recognition of cars and two wheelers.
